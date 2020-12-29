@@ -1,5 +1,11 @@
 """Adapted from:
 https://github.com/smallcorgi/3D-Deepbox
+
+What this code actually does:
+This code prepares the dataset by cropping out vehicles from pictures based on
+their 2D bounding boxes, fetching the 3D bounding box data, and putting them
+together as x, y pairs. The model can then take as input a cropped image of a
+vehicle and predict the 3D bounding box.
 """
 
 import tensorflow as tf
@@ -32,6 +38,8 @@ def compute_anchors(angle):
 
 
 def parse_annotation(label_dir, image_dir):
+    """Leo's note: returns as a dict all of the vehicle labels for vehicles that
+    are not truncated or occluded."""
     all_objs = []
     dims_avg = {key: np.array([0, 0, 0]) for key in VEHICLES}
     dims_cnt = {key: 0 for key in VEHICLES}
@@ -45,6 +53,7 @@ def parse_annotation(label_dir, image_dir):
             occluded = np.abs(float(line[2]))
 
             if line[0] in VEHICLES and truncated < 0.1 and occluded < 0.1:
+                # Adds pi / 2 (90 degrees) to alpha. Why?
                 new_alpha = float(line[3]) + np.pi / 2.
                 if new_alpha < 0:
                     new_alpha = new_alpha + 2. * np.pi
@@ -108,6 +117,11 @@ def parse_annotation(label_dir, image_dir):
 
 
 def prepare_input_and_output(image_dir, train_inst):
+    """Leo's note: returns the image, dimensions, orientation, and confidence
+    associated with a given object in a training image. This function cuts out
+    the object from the image, resizes to 224x224, possibly flips the image
+    horizontally (50% chance), subtracts out the mean RGB values, and returns
+    the example for use in training."""
     ### Prepare image patch
     xmin = train_inst['xmin']  # + np.random.randint(-MAX_JIT, MAX_JIT+1)
     ymin = train_inst['ymin']  # + np.random.randint(-MAX_JIT, MAX_JIT+1)
@@ -145,6 +159,8 @@ def prepare_input_and_output(image_dir, train_inst):
 
 
 def data_gen(image_dir, all_objs, batch_size):
+    """Leo's note: generates batches of x, y pairs, where x is the image data
+    and y is a 3-tuple of (dimension, orientation, confidence)."""
     num_obj = len(all_objs)
 
     keys = list(range(num_obj))
