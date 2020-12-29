@@ -4,11 +4,12 @@ https://github.com/smallcorgi/3D-Deepbox
 
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
-import cv2, os
+import cv2
+import os
 import numpy as np
 import time
 from random import shuffle
-from src.main.data_processing import *
+from data_processing import *
 import sys
 import argparse
 from tqdm import tqdm
@@ -187,7 +188,7 @@ def train(image_dir, box2d_loc, label_dir):
         for num_iters in tqdm(range(train_num), ascii=True,
                               desc='Epoch ' + str(epoch + 1) + ' : Loss:' + str(
                                       batch_loss)):
-            train_img, train_label = train_gen.next()
+            train_img, train_label = next(train_gen)
             _, batch_loss = sess.run([optimizer, loss],
                                      feed_dict={inputs: train_img,
                                                 d_label: train_label[0],

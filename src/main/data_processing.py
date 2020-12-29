@@ -147,7 +147,7 @@ def prepare_input_and_output(image_dir, train_inst):
 def data_gen(image_dir, all_objs, batch_size):
     num_obj = len(all_objs)
 
-    keys = range(num_obj)
+    keys = list(range(num_obj))
     np.random.shuffle(keys)
 
     l_bound = 0
