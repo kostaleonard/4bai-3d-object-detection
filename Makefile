@@ -17,3 +17,7 @@ train:
 
 predict_on_train:
 	python src/main/main.py --mode test --gpu -1 --image $(train_image_path) --box2d $(train_label_path) --model $(model_path) --output $(output_file_path)
+
+eval_train_predictions:
+	g++ -O3 -DNDEBUG -o ./kitti_eval/evaluate_object_3d_offline ./kitti_eval/evaluate_object_3d_offline.cpp
+	./kitti_eval/evaluate_object_3d_offline $(train_label_path) $(train_output_file_path)
