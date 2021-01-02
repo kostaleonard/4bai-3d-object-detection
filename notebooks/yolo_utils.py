@@ -30,7 +30,7 @@ def generate_colors(class_names):
     return colors
 
 def scale_boxes(boxes, image_shape):
-    """ Scales the predicted boxes in order to be drawable on the image"""
+    """Scales the predicted boxes in order to be drawable on the image"""
     height = image_shape[0]
     width = image_shape[1]
     image_dims = K.stack([height, width, height, width])
