@@ -3,8 +3,8 @@ train_label_path=data/KITTI/training/label_2/
 train_2d_boxes_path=unused
 test_image_path=data/KITTI/data_object_image_2/testing/image_2/
 model_path=model/model-1
-train_output_file_path=data/predictions/3d_boxes/predictions_train/
-val_output_file_path=data/predictions/3d_boxes/predictions_val/
+train_output_file_path=data/predictions/3d_boxes/train/
+val_output_file_path=data/predictions/3d_boxes/val/
 yolo_train_predictions_path=data/predictions/2d_boxes/train/
 
 all: train

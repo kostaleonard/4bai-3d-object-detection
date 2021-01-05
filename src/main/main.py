@@ -280,7 +280,7 @@ def test(model, image_dir, box2d_loc, box3d_loc):
 
                 line[3] = str(angle_offset)
 
-                line[-1] = angle_offset + np.arctan(
+                line[14] = angle_offset + np.arctan(
                     float(line[11]) / float(line[13]))
 
                 # Transform regressed dimension
