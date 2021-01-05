@@ -236,6 +236,8 @@ def test(model, image_dir, box2d_loc, box3d_loc):
     for f in all_image:
         image_file = image_dir + f
         box2d_file = box2d_loc + f.replace('png', 'txt')
+        if not os.path.exists(box2d_file):
+            continue
         box3d_file = box3d_loc + f.replace('png', 'txt')
         print(image_file)
         with open(box3d_file, 'w') as box3d:

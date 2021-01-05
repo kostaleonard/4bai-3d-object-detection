@@ -5,6 +5,7 @@ test_image_path=data/KITTI/data_object_image_2/testing/image_2/
 model_path=model/model-1
 train_output_file_path=data/predictions/3d_boxes/predictions_train/
 val_output_file_path=data/predictions/3d_boxes/predictions_val/
+yolo_train_predictions_path=data/predictions/2d_boxes/train/
 
 all: train
 
@@ -16,7 +17,10 @@ train:
 	python src/main/main.py --mode train --gpu -1 --image $(train_image_path) --label $(train_label_path) --box2d $(train_2d_boxes_path)
 
 predict_on_train:
-	python src/main/main.py --mode test --gpu -1 --image $(train_image_path) --box2d $(train_label_path) --model $(model_path) --output $(output_file_path)
+	python src/main/main.py --mode test --gpu -1 --image $(train_image_path) --box2d $(train_label_path) --model $(model_path) --output $(train_output_file_path)
+
+predict_on_yolo_train:
+	python src/main/main.py --mode test --gpu -1 --image $(train_image_path) --box2d $(yolo_train_predictions_path) --model $(model_path) --output $(train_output_file_path)
 
 eval_train_predictions:
 	g++ -O3 -DNDEBUG -o ./kitti_eval/evaluate_object_3d_offline ./kitti_eval/evaluate_object_3d_offline.cpp
