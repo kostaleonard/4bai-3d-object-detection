@@ -1,5 +1,8 @@
 train_image_path=data/KITTI/data_object_image_2/training/image_2/
 train_label_path=data/KITTI/training/label_2/
+partition_train_label_path=data/KITTI/training/label_2_partitioned/train/
+partition_val_label_path=data/KITTI/training/label_2_partitioned/val/
+partition_test_label_path=data/KITTI/training/label_2_partitioned/test/
 train_2d_boxes_path=unused
 test_image_path=data/KITTI/data_object_image_2/testing/image_2/
 model_path=model/model-1
@@ -19,8 +22,17 @@ vgg:
 train:
 	python src/main/main.py --mode train --gpu -1 --image $(train_image_path) --label $(train_label_path) --box2d $(train_2d_boxes_path)
 
-predict_on_train:
+predict_on_ground_truth_full_train:
 	python src/main/main.py --mode test --gpu -1 --image $(train_image_path) --box2d $(train_label_path) --model $(model_path) --output $(train_output_file_path)
+
+predict_on_ground_truth_partition_train:
+	python src/main/main.py --mode test --gpu -1 --image $(train_image_path) --box2d $(partition_train_label_path) --model $(model_path) --output $(train_output_file_path)
+
+predict_on_ground_truth_partition_val:
+	python src/main/main.py --mode test --gpu -1 --image $(train_image_path) --box2d $(partition_val_label_path) --model $(model_path) --output $(val_output_file_path)
+	
+predict_on_ground_truth_partition_test:
+	python src/main/main.py --mode test --gpu -1 --image $(train_image_path) --box2d $(partition_test_label_path) --model $(model_path) --output $(test_output_file_path)
 
 predict_on_yolo_train:
 	python src/main/main.py --mode test --gpu -1 --image $(train_image_path) --box2d $(yolo_train_predictions_path) --model $(model_path) --output $(train_output_file_path)

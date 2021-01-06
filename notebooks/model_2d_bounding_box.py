@@ -379,3 +379,36 @@ def write_predictions_on_dir(
                                height, width,
                                os.path.join(output_dir, output_file),
                                label_filename=label_file)
+
+        
+def get_mean_iou(
+    predictions: Dict[str, Tuple[np.ndarray, np.ndarray, np.ndarray]],
+    labels: Dict[str, List[str]],
+    image_dir: str) -> float:
+    """Returns the mean IoU over all boxes predicted.
+    :param predictions: The predictions of the 2D bounding box model.
+    :param labels: The labels.
+    :param image_dir: The directory in which the images are located.
+    :return: The mean IoU.
+    """
+    total_iou = 0
+    total_boxes = 0
+    for image_file in predictions:
+        out_scores, out_boxes, out_classes = predictions[image_file]
+        height, width = get_image_height_width(os.path.join(
+            image_dir, image_file))
+        for box in out_boxes:
+            top, left, bottom, right = box
+            top = max(0, np.floor(top + 0.5).astype('int32'))
+            left = max(0, np.floor(left + 0.5).astype('int32'))
+            bottom = min(height, np.floor(bottom + 0.5).astype('int32'))
+            right = min(width, np.floor(right + 0.5).astype('int32'))
+            best_iou = 0
+            for line in labels[image_file]:
+                obj = get_label_obj(line)
+                obj_box = obj['x1'], obj['y1'], obj['x2'], obj['y2']
+                obj_iou = iou(box, obj_box)
+                best_iou = max(best_iou, obj_iou)
+            total_iou += best_iou
+            total_boxes += 1
+    return total_iou / total_boxes

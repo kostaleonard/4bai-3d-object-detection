@@ -8,6 +8,7 @@ import matplotlib.patches as patches
 import cv2
 from typing import Dict, Any, List, Optional, Tuple
 from math import sin, cos
+from shutil import copyfile, rmtree
 
 # Global constants.
 KITTI_ROOT_DIR = os.path.join('..', 'data', 'KITTI')
@@ -15,6 +16,7 @@ LEFT_CAM_ROOT_DIR = os.path.join(KITTI_ROOT_DIR, 'data_object_image_2')
 TRAIN_IMAGE_DIR = os.path.join(LEFT_CAM_ROOT_DIR, 'training', 'image_2')
 TEST_IMAGE_DIR = os.path.join(LEFT_CAM_ROOT_DIR, 'testing', 'image_2')
 LABEL_DIR = os.path.join(KITTI_ROOT_DIR, 'training', 'label_2')
+PARTITION_LABEL_DIR = os.path.join(KITTI_ROOT_DIR, 'training', 'label_2_partitioned')
 TRAIN_CALIB_DIR = os.path.join(KITTI_ROOT_DIR, 'data_object_calib', 'training',
                               'calib')
 TEST_CALIB_DIR = os.path.join(KITTI_ROOT_DIR, 'data_object_calib', 'testing',
@@ -359,3 +361,44 @@ def get_calibrations(calib_dir: str) -> Dict[str, List[str]]:
             calibrations[filename.replace('.txt', '.png')] = \
                 [line.strip() for line in infile.readlines()]
     return calibrations
+
+
+def create_partition_label_dirs(
+    partition: Dict[str, List[str]],
+    full_label_dir: str, dst_label_dir: str) -> None:
+    """Creates separate label directories for the train, val, and test images in
+    the partition, each of which is a subset of the files in full_label_dir.
+    This is necessary for the 3D prediction scripts, which work on entire
+    directories.
+    :param partition: The partition.
+    :param full_label_dir: The directory in which reside all of the KITTI label
+    files.
+    :param dst_label_dir: The directory to which the labels should be copied,
+    under train, val, and test subdirectories.    
+    """
+    if not os.path.exists(dst_label_dir):
+        os.mkdir(dst_label_dir)
+    else:
+        rmtree(dst_label_dir)
+        os.mkdir(dst_label_dir)
+    dst_train_dir = os.path.join(dst_label_dir, 'train')
+    if not os.path.exists(dst_train_dir):
+        os.mkdir(dst_train_dir)
+    dst_val_dir = os.path.join(dst_label_dir, 'val')
+    if not os.path.exists(dst_val_dir):
+        os.mkdir(dst_val_dir)
+    dst_test_dir = os.path.join(dst_label_dir, 'test')
+    if not os.path.exists(dst_test_dir):
+        os.mkdir(dst_test_dir)
+    for image_file in partition[TRAIN_KEY]:
+        label_file = image_file.replace('.png', '.txt')
+        copyfile(os.path.join(full_label_dir, label_file),
+                 os.path.join(dst_train_dir, label_file))
+    for image_file in partition[VAL_KEY]:
+        label_file = image_file.replace('.png', '.txt')
+        copyfile(os.path.join(full_label_dir, label_file),
+                 os.path.join(dst_val_dir, label_file))
+    for image_file in partition[TEST_KEY]:
+        label_file = image_file.replace('.png', '.txt')
+        copyfile(os.path.join(full_label_dir, label_file),
+                 os.path.join(dst_test_dir, label_file))
