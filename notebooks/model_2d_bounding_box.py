@@ -6,7 +6,7 @@ import imageio
 from tqdm import tqdm
 from PIL import Image
 import numpy as np
-from typing import Tuple, Optional, Dict, Any
+from typing import Tuple, Optional, Dict, Any, List
 from matplotlib.pyplot import imshow
 import tensorflow as tf
 from keras import backend as K
@@ -36,6 +36,8 @@ INVALID_3D_LOC = -1000
 INVALID_RY = -10
 TRAIN_PREDICT_DIR = os.path.join('..', 'data', 'predictions', '2d_boxes',
                                  'train')
+VAL_PREDICT_DIR = os.path.join('..', 'data', 'predictions', '2d_boxes',
+                               'val')
 TEST_PREDICT_DIR = os.path.join('..', 'data', 'predictions', '2d_boxes',
                                 'test')
 
@@ -306,6 +308,32 @@ def get_image_height_width(image_file: str) -> Tuple[int, int]:
     """
     with Image.open(image_file) as image:
         return image.size[::-1]
+
+    
+def predict_on_list(
+    yolo_model: tf.keras.Model,
+    sess: tf.Session,
+    image_dir: str,
+    image_files: List[str],
+    max_images: Optional[int] = None) -> \
+    Dict[str, Tuple[np.ndarray, np.ndarray, np.ndarray]]:
+    """Runs the YOLO graph stored in the session on the image.
+    :param yolo_model: The YOLO model.
+    :param sess: The TensorFlow/Keras session containing the YOLO graph.
+    :param image_dir: The path to the image directory on which to predict.
+    :param image_files: The names of the images on which to predict.
+    :param max_images: If specified, the maximum number of images on which to
+    predict.
+    :return: A dictionary where the keys are the filenames and the values are
+    tuple of scores, boxes, classes for the boxes found by YOLO.
+    """
+    result = {}
+    if max_images is not None:
+        image_files = image_files[:max_images]
+    for image_file in tqdm(image_files):
+        result[image_file] = predict_on_image(
+            yolo_model, sess, os.path.join(image_dir, image_file))
+    return result
     
     
 def predict_on_dir(
@@ -323,14 +351,9 @@ def predict_on_dir(
     :return: A dictionary where the keys are the filenames and the values are
     tuple of scores, boxes, classes for the boxes found by YOLO.
     """
-    result = {}
     image_files = os.listdir(image_dir)
-    if max_images is not None:
-        image_files = image_files[:max_images]
-    for image_file in tqdm(image_files):
-        result[image_file] = predict_on_image(
-            yolo_model, sess, os.path.join(image_dir, image_file))
-    return result
+    return predict_on_list(yolo_model, sess, image_dir, image_files,
+                           max_images=max_images)
 
 
 def write_predictions_on_dir(
