@@ -15,6 +15,7 @@ from yolo_utils import read_classes, read_anchors, generate_colors, \
     preprocess_image, draw_boxes, scale_boxes
 from yad2k.models.keras_yolo import yolo_head, yolo_boxes_to_corners, \
     preprocess_true_boxes, yolo_loss, yolo_body
+from dataset import get_label_obj
 
 # Global constants.
 YOLO_MODEL_INPUT_SHAPE = (608, 608, 3)
