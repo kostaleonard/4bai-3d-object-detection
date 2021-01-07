@@ -412,3 +412,31 @@ def get_mean_iou(
             total_iou += best_iou
             total_boxes += 1
     return total_iou / total_boxes
+
+
+def get_mean_iou_ground_truth(
+    labels: Dict[str, List[str]],
+    image_dir: str) -> float:
+    """Returns the mean IoU over all boxes from the ground truth. Should be 1.0.
+    Included for testing.
+    :param labels: The labels.
+    :param image_dir: The directory in which the images are located.
+    :return: The mean IoU (should be 1.0).
+    """
+    total_iou = 0
+    total_boxes = 0
+    for image_file in labels:
+        height, width = get_image_height_width(os.path.join(
+            image_dir, image_file))
+        for line in labels[image_file]:
+            obj = get_label_obj(line)
+            box = obj['x1'], obj['y1'], obj['x2'], obj['y2']
+            best_iou = 0
+            for line in labels[image_file]:
+                obj = get_label_obj(line)
+                obj_box = obj['x1'], obj['y1'], obj['x2'], obj['y2']
+                obj_iou = iou(box, obj_box)
+                best_iou = max(best_iou, obj_iou)
+            total_iou += best_iou
+            total_boxes += 1
+    return total_iou / total_boxes
