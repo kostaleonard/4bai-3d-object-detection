@@ -44,7 +44,8 @@ def parse_annotation(filenames, label_dir):
     dims_avg = {key: np.array([0, 0, 0]) for key in VEHICLES}
     dims_cnt = {key: 0 for key in VEHICLES}
 
-    for label_file in filenames:
+    for image_file in filenames:
+        label_file = image_file.replace('.png', '.txt')
         with open(os.path.join(label_dir, label_file)) as infile:
             for line in infile.readlines():
                 line = line.strip().split(' ')
@@ -125,7 +126,7 @@ def prepare_input_and_output(image_dir, train_inst):
     ymin = train_inst['ymin']  # + np.random.randint(-MAX_JIT, MAX_JIT+1)
     xmax = train_inst['xmax']  # + np.random.randint(-MAX_JIT, MAX_JIT+1)
     ymax = train_inst['ymax']  # + np.random.randint(-MAX_JIT, MAX_JIT+1)
-    img = cv2.imread(image_dir + train_inst['image'])
+    img = cv2.imread(os.path.join(image_dir, train_inst['image']))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = copy.deepcopy(img[ymin:ymax + 1, xmin:xmax + 1]).astype(np.float32)
 
