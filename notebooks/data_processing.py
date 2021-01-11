@@ -37,45 +37,44 @@ def compute_anchors(angle):
     return anchors
 
 
-def parse_annotation(label_dir, image_dir):
+def parse_annotation(filenames, label_dir):
     """Leo's note: returns as a dict all of the vehicle labels for vehicles that
     are not truncated or occluded."""
     all_objs = []
     dims_avg = {key: np.array([0, 0, 0]) for key in VEHICLES}
     dims_cnt = {key: 0 for key in VEHICLES}
 
-    for label_file in sorted(os.listdir(label_dir)):
-        image_file = label_file.replace('txt', 'png')
+    for label_file in filenames:
+        with open(os.path.join(label_dir, label_file)) as infile:
+            for line in infile.readlines():
+                line = line.strip().split(' ')
+                truncated = np.abs(float(line[1]))
+                occluded = np.abs(float(line[2]))
 
-        for line in open(label_dir + label_file).readlines():
-            line = line.strip().split(' ')
-            truncated = np.abs(float(line[1]))
-            occluded = np.abs(float(line[2]))
+                if line[0] in VEHICLES and truncated < 0.1 and occluded < 0.1:
+                    new_alpha = float(line[3]) + np.pi / 2.
+                    if new_alpha < 0:
+                        new_alpha = new_alpha + 2. * np.pi
+                    new_alpha = new_alpha - int(new_alpha / (2. * np.pi)) * (
+                                2. * np.pi)
 
-            if line[0] in VEHICLES and truncated < 0.1 and occluded < 0.1:
-                new_alpha = float(line[3]) + np.pi / 2.
-                if new_alpha < 0:
-                    new_alpha = new_alpha + 2. * np.pi
-                new_alpha = new_alpha - int(new_alpha / (2. * np.pi)) * (
-                            2. * np.pi)
+                    obj = {'name': line[0],
+                           'image': image_file,
+                           'xmin': int(float(line[4])),
+                           'ymin': int(float(line[5])),
+                           'xmax': int(float(line[6])),
+                           'ymax': int(float(line[7])),
+                           'dims': np.array(
+                               [float(number) for number in line[8:11]]),
+                           'new_alpha': new_alpha
+                           }
 
-                obj = {'name': line[0],
-                       'image': image_file,
-                       'xmin': int(float(line[4])),
-                       'ymin': int(float(line[5])),
-                       'xmax': int(float(line[6])),
-                       'ymax': int(float(line[7])),
-                       'dims': np.array(
-                           [float(number) for number in line[8:11]]),
-                       'new_alpha': new_alpha
-                       }
+                    dims_avg[obj['name']] = dims_cnt[obj['name']] * dims_avg[
+                        obj['name']] + obj['dims']
+                    dims_cnt[obj['name']] += 1
+                    dims_avg[obj['name']] /= dims_cnt[obj['name']]
 
-                dims_avg[obj['name']] = dims_cnt[obj['name']] * dims_avg[
-                    obj['name']] + obj['dims']
-                dims_cnt[obj['name']] += 1
-                dims_avg[obj['name']] /= dims_cnt[obj['name']]
-
-                all_objs.append(obj)
+                    all_objs.append(obj)
     ###### flip data
     for obj in all_objs:
         # Fix dimensions
@@ -146,7 +145,8 @@ def prepare_input_and_output(image_dir, train_inst):
 
     # resize the image to standard size
     img = cv2.resize(img, (NORM_H, NORM_W))
-    img = img - np.array([[[103.939, 116.779, 123.68]]])
+    # img = img - np.array([[[103.939, 116.779, 123.68]]])
+    img /= 255.
     # img = img[:,:,::-1]
 
     ### Fix orientation and confidence
