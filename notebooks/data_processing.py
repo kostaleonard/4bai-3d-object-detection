@@ -53,7 +53,6 @@ def parse_annotation(label_dir, image_dir):
             occluded = np.abs(float(line[2]))
 
             if line[0] in VEHICLES and truncated < 0.1 and occluded < 0.1:
-                # Adds pi / 2 (90 degrees) to alpha. Why?
                 new_alpha = float(line[3]) + np.pi / 2.
                 if new_alpha < 0:
                     new_alpha = new_alpha + 2. * np.pi
