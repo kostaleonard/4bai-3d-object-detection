@@ -116,6 +116,40 @@ def get_train_only_kitti_partition(
     return partition
 
 
+def get_train_only_kitti_partition_s3(
+    s3_train_image_dir: str,
+    dataset_args: Dict[str, Any] = DEFAULT_DATASET_ARGS) -> Dict[str,List[str]]:
+    """Returns a dict where the keys are 'train', 'test', and 'val', and the
+    values are the images under each. The list is the authoratative order of the
+    train/test examples; partition['train'][0] is the first training example,
+    and x_train[0] will correspond with that filename. This partition is created
+    using only the training data (for which we have labels).
+    :param s3_train_image_dir: The directory in which are located all the
+    training images, with the S3 prefix attached (looks like: 
+    s3://sagemaker-4bai-project/KITTI/data_object_image_2/training/image_2/)
+    :param dataset_args: The dataset arguments. See DEFAULT_DATASET_ARGS for
+    available options.
+    :return: The train/val/test partition.
+    """
+    dataset_args = {**DEFAULT_DATASET_ARGS, **dataset_args}
+    partition = {}
+    fs = s3fs.S3FileSystem()
+    image_filenames = [filename.split('/')[-1] for
+                       filename in sorted(fs.ls(s3_train_image_dir)) if
+                       filename.endswith('.png')]
+    np.random.seed(dataset_args['split_seed'])
+    rand_indices = np.random.permutation(len(image_filenames))
+    test_len = int(dataset_args['test_split'] * len(image_filenames))
+    val_len = int(dataset_args['val_split'] * len(image_filenames))
+    test_indices = rand_indices[:test_len]
+    val_indices = rand_indices[test_len:test_len + val_len]
+    train_indices = rand_indices[test_len + val_len:]
+    partition[TRAIN_KEY] = [image_filenames[i] for i in train_indices]
+    partition[VAL_KEY] = [image_filenames[i] for i in val_indices]
+    partition[TEST_KEY] = [image_filenames[i] for i in test_indices]
+    return partition
+
+
 def load_image_into_numpy_array(
     path: str,
     target_size: Optional[Tuple[int, int]] = None) -> np.ndarray:

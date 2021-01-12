@@ -126,6 +126,51 @@ def train(model: Model,
         validation_steps=val_steps)
 
 
+def train_s3(
+    model: Model,
+    partition: Dict[str, List[str]],
+    s3_image_dir: str,
+    s3_label_dir: str,
+    train_args: Dict[str, Any] = DEFAULT_TRAIN_ARGS) -> History:
+    """Trains the model and returns the history.
+    :param model: The model.
+    :param partition: The partition.
+    :param s3_image_dir: The directory in which the training images are stored,
+    with the S3 prefix attached (looks like:
+    s3://sagemaker-4bai-project/KITTI/data_object_image_2/training/image_2/).
+    :param s3_label_dir: The directory in which the labels are stored, with the
+    S3 prefix attached (looks like:
+    s3://sagemaker-4bai-project/KITTI/training/label_2/).
+    :param train_args: A dictionary specifying the training hyperparameters.
+    :return: The training history object.    
+    """
+    train_objs = parse_annotation_s3(partition[TRAIN_KEY], s3_label_dir)
+    val_objs = parse_annotation_s3(partition[VAL_KEY], s3_label_dir)
+    np.random.shuffle(train_objs)
+    np.random.shuffle(val_objs)
+    train_gen = data_gen_s3(s3_image_dir, train_objs, train_args['batch_size'])
+    val_gen = data_gen_s3(s3_image_dir, val_objs, train_args['batch_size'])
+    train_steps = int(np.ceil(len(train_objs) / train_args['batch_size']))
+    val_steps = int(np.ceil(len(val_objs) / train_args['batch_size']))
+    callbacks = []
+    if train_args['use_tensorboard']:
+        log_dir = 'logs_{0}'.format(datetime.now())
+        tensorboard_callback = TensorBoard(log_dir=log_dir)
+        callbacks.append(tensorboard_callback)
+    if train_args['model_checkpoint_filename']:
+        checkpoint_callback = ModelCheckpoint(
+            train_args['model_checkpoint_filename'],
+            save_best_only=True)
+        callbacks.append(checkpoint_callback)
+    return model.fit(
+        x=train_gen,
+        epochs=train_args['epochs'],
+        callbacks=callbacks,
+        validation_data=val_gen,
+        steps_per_epoch=train_steps,
+        validation_steps=val_steps)
+
+
 def predict_on_dir(model: Model, image_filenames: List[str], image_dir: str,
                    box2d_dir: str, result_dir: str) -> None:
     """Runs the model prediction on all the images in image_filenames and writes
