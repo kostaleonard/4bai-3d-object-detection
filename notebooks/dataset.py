@@ -23,8 +23,12 @@ TEST_CALIB_DIR = os.path.join(KITTI_ROOT_DIR, 'data_object_calib', 'testing',
                               'calib')
 PREDICTION_2D_BOX_DIR = os.path.join('..', 'data', 'predictions', '2d_boxes',
                                      'train')
-PREDICTION_3D_BOX_DIR = os.path.join('..', 'data', 'predictions', '3d_boxes',
-                                     'train')
+PREDICTION_3D_BOX_DIR_TRAIN = os.path.join('..', 'data', 'predictions',
+                                           '3d_boxes', 'train')
+PREDICTION_3D_BOX_DIR_VAL = os.path.join('..', 'data', 'predictions',
+                                         '3d_boxes', 'val')
+PREDICTION_3D_BOX_DIR_TEST = os.path.join('..', 'data', 'predictions',
+                                          '3d_boxes', 'test')
 PROJ_MTX_SHAPE = (3, 4)
 DEFAULT_DATASET_ARGS = {'val_split': 0.2,
                         'test_split': 0.1,
