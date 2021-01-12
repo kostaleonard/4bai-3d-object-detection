@@ -13,6 +13,9 @@ import cv2, os
 import numpy as np
 from random import shuffle
 import copy
+import s3fs
+from tqdm import tqdm
+from PIL import Image
 
 #####
 # Training setting
@@ -248,6 +251,7 @@ def prepare_input_and_output_s3(s3_image_dir, train_inst):
     ymin = train_inst['ymin']  # + np.random.randint(-MAX_JIT, MAX_JIT+1)
     xmax = train_inst['xmax']  # + np.random.randint(-MAX_JIT, MAX_JIT+1)
     ymax = train_inst['ymax']  # + np.random.randint(-MAX_JIT, MAX_JIT+1)
+    fs = s3fs.S3FileSystem()
     with fs.open(os.path.join(s3_image_dir, train_inst['image'])) as infile:
         img = np.array(Image.open(infile))
     img = copy.deepcopy(img[ymin:ymax + 1, xmin:xmax + 1]).astype(np.float32)

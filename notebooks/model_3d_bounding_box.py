@@ -1,7 +1,7 @@
 """This module contains functions for using the 3D bounding box model."""
 
 # Import statements.
-from data_processing import parse_annotation, data_gen
+from data_processing import *
 from dataset import *
 import os
 import cv2

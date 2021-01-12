@@ -9,6 +9,7 @@ import cv2
 from typing import Dict, Any, List, Optional, Tuple
 from math import sin, cos
 from shutil import copyfile, rmtree
+import s3fs
 
 # Global constants.
 KITTI_ROOT_DIR = os.path.join('..', 'data', 'KITTI')
