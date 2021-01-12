@@ -101,7 +101,7 @@ def get_train_only_kitti_partition(
     dataset_args = {**DEFAULT_DATASET_ARGS, **dataset_args}
     partition = {}
     image_filenames = [filename for
-                       filename in os.listdir(train_image_dir) if
+                       filename in sorted(os.listdir(train_image_dir)) if
                        filename.endswith('.png')]
     np.random.seed(dataset_args['split_seed'])
     rand_indices = np.random.permutation(len(image_filenames))
