@@ -13,7 +13,7 @@ In order to effectively maneuver, autonomous vehicles rely on the ability to acc
 
 Based on the literature we've reviewed (see [References](#references)), we used a 2D object detector to produce priors that help a 3D object detector draw accurate 3D bounding boxes. The 2D object detector draws a rectangular (2D) bounding box around the cars, and the 3D object detector uses those boxes to infer 6-sided (3D) bounding volumes. We use **only monocular RGB camera data**, with no depth information. 
 
-We know it can be a nightmare to use code you haven't personally written. Our goal is that you can clone this repository and run the model in a single command. When you're ready to find out how it works, you'll find well-written, well-documented, well-tested code.
+Our goal is that you can clone this repository and run the model in a single command. When you're ready to check out how it works, you'll find well-written, well-documented, well-tested code.
 
 ## Run Instructions
 
@@ -55,4 +55,5 @@ TODO
 
 ## References
 
-TODO
+* 3D Bounding Box Estimation Using Deep Learning and Geometry. [Paper](https://arxiv.org/abs/1612.00496). [Code](https://github.com/smallcorgi/3D-Deepbox).
+* 3D detection with monocular RGB image. [Code](https://github.com/ZhixinLai/3D-detection-with-monocular-RGB-image).
