@@ -44,6 +44,8 @@ To gain familiarity with the model or data, you can also check the notebooks in 
 
 TODO
 
+![Original image](example_images/original.png)
+
 ## Coming Soon
 
 * Trained model files.
