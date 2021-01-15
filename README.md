@@ -23,7 +23,6 @@ To train the model, run:
 
 ```
 make
-# (equivalent to make train)
 ```
 
 To predict 3D bounding boxes on the training/validation/test datasets, run:
