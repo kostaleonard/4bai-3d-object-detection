@@ -42,9 +42,29 @@ To gain familiarity with the model or data, you can also check the notebooks in 
 
 ## Examples
 
-TODO
+Here is an example image from the KITTI dataset.
 
 ![Original image](example_images/original.png)
+
+Now we'll overlay the ground truth 2D bounding box information.
+
+![2D ground truth](example_images/2d_ground_truth.png)
+
+There are 2 border styles and 4 colors. A solid border indicates that the object was not truncated, while a dashed border indicates that it was (some portion of the object is off-camera). 3 of the colors indicate occlusion information: green is no occlusion, yellow is partially occluded, and red is severely occluded. A white bounding box means that we don't care about the object because it is too far away or obscure. This is in accordance with standard KITTI formatting procedures. Next we'll show the 3D ground truth.
+
+![3D ground truth](example_images/3d_ground_truth.png)
+
+This contains similar information, but now with bounding volumes and black bars indicating object orientation. There are also pedestrians in these labels; for the purposes of this project, we are only concerned with cars.
+
+When we pass the image to our 2D object detector, here are the predicted labels. They're pretty good! All predictions are drawn in orange boxes.
+
+![2D prediction](example_images/2d_prediction.png)
+
+Finally, we run 3D object detection using these 2D boxes as priors. Here's what we get.
+
+![3D prediction](example_images/3d_prediction.png)
+
+The placement of the boxes is more or less correct, but they could be tighter and the orientation is sometimes wrong. This is a work in progress.
 
 ## Coming Soon
 
