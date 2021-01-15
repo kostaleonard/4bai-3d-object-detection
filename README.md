@@ -53,6 +53,6 @@ TODO
 * Plug-and-play project structure: clone, run `make`, and it just works--no need to download data, install packages, or configure obscure settings.
 * Unit tests.
 
-## References {#references}
+## References
 
-
+TODO
