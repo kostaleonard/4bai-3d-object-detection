@@ -17,11 +17,24 @@ TODO
 
 Clone the repository and organize the datasets as shown in `./data/README.md`. Training, testing, and prediction can all be run from the project root using the `Makefile`.
 
-To train the model, run `make` (or `make train`).
+To train the model, run:
 
-To predict 3D bounding boxes on the training/val/test dataset, run `make predict_on_ground_truth_partition_{train, val, test}`.
+```
+make
+# (equivalent to make train)
+```
 
-To evaluate 3D bounding box predictions, run `make eval_{train, val, test}_predictions`.
+To predict 3D bounding boxes on the training/val/test dataset, run:
+
+```
+make predict_on_ground_truth_partition_{train, val, test}
+```
+
+To evaluate 3D bounding box predictions, run:
+
+```
+make eval_{train, val, test}_predictions
+```
 
 To gain familiarity with the model or data, you can also check the notebooks in `./notebooks/`.
 
