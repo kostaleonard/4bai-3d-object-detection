@@ -78,3 +78,6 @@ The placement of the boxes is more or less correct, but they could be tighter an
 
 * 3D Bounding Box Estimation Using Deep Learning and Geometry. [Paper](https://arxiv.org/abs/1612.00496). [Code](https://github.com/smallcorgi/3D-Deepbox).
 * 3D detection with monocular RGB image. [Code](https://github.com/ZhixinLai/3D-detection-with-monocular-RGB-image).
+* TensorFlow 2.0 object detection API. [Blog](https://blog.tensorflow.org/2020/07/tensorflow-2-meets-object-detection-api.html).
+* TensorFlow 2.0 Detection Model Zoo. [Code](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md).
+
