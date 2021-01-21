@@ -9,5 +9,5 @@ Navigate to the EC2 instances page on AWS and select launch instance. Choose pla
 When the instance has completed setup and is in the running state, SSH into the instance with the command below. The public IPv4 DNS is available on the EC2 instances page.
 
 ```
-ssh -i {key.pem file you used in setup} ec2-user@{EC2 instance public IPv4 DNS}
+ssh -i {key.pem file you used in setup} ubuntu@{EC2 instance public IPv4 DNS}
 ```
