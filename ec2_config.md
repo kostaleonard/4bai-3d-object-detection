@@ -2,7 +2,7 @@
 
 ## Launching an instance
 
-Navigate to the EC2 instances page on AWS and select launch instance. Choose instance type p2.xlarge. For tags, add project_group=Lyft 3d, student_name={your name}, and Name={readable name of EC2 instance, e.g. lyft3d-ec2}. Also add a key pair (create if necessary) so that you can SSH into the instance. Launch.
+Navigate to the EC2 instances page on AWS and select launch instance. Choose platform Deep Learning Ubuntu 18.04. Choose instance type p2.xlarge. For tags, add project_group=Lyft 3d, student_name={your name}, and Name={readable name of EC2 instance, e.g. lyft3d-ec2}. Also add a key pair (create if necessary) so that you can SSH into the instance. Launch.
 
 ## SSH an instance
 
