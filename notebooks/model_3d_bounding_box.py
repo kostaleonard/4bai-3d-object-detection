@@ -6,7 +6,7 @@ from dataset import *
 import os
 import cv2
 import numpy as np
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import tensorflow as tf
@@ -248,10 +248,14 @@ def smooth_curve(points: List[float], factor: float = 0.6) -> List[float]:
     return smoothed_points
 
 
-def plot_history(history: History, smooth_fac: float = 0.6) -> None:
+def plot_history(history: History, smooth_fac: float = 0.6,
+    outfile: Optional[str] = None, show: bool = True) -> None:
     """Plots the training history. You can also visualize the training process
     in Tensorboard or wandb.
     :param history: The training history.
+    :param smooth_fac: The smoothing factor.
+    :param outfile: If specified, the filename to which the figure is saved.
+    :param show: If True, display the figure.
     """
     acc = history.history['accuracy']
     val_acc = history.history['val_accuracy']
@@ -264,10 +268,15 @@ def plot_history(history: History, smooth_fac: float = 0.6) -> None:
              label='Smoothed validation acc')
     plt.title('Training and validation accuracy')
     plt.legend()
+    if outfile:
+        plt.savefig('acc_{0}.png'.format(outfile))
     plt.figure()
     plt.plot(epochs, smooth_curve(loss), 'bo', label='Smoothed training loss')
     plt.plot(epochs, smooth_curve(val_loss), 'b',
              label='Smoothed validation loss')
     plt.title('Training and validation loss')
     plt.legend()
-    plt.show()
+    if outfile:
+        plt.savefig('loss_{0}.png'.format(outfile))
+    if show:
+        plt.show()

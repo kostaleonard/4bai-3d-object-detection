@@ -6,6 +6,7 @@ BUCKET_NAME = 'sagemaker-4bai-project'
 S3_TRAIN_IMAGE_DIR = ('s3://{0}/KITTI/data_object_image_2/training/'
                       'image_2/').format(BUCKET_NAME)
 S3_LABEL_DIR = 's3://{0}/KITTI/training/label_2/'.format(BUCKET_NAME)
+HISTORY_FIG_OUTFILE='model_3d'
 
 
 def parse_args() -> argparse.Namespace:
@@ -13,12 +14,9 @@ def parse_args() -> argparse.Namespace:
     :return: The command line arguments as a Namespace object.
     """
     parser = argparse.ArgumentParser(description='Trains the 3D model.')
-    # Hyperparameters.
     parser.add_argument('--epochs', type=int)
-    # S3 training configuration parameters.
-    parser.add_argument('--model_dir', type=str, help='S3 location where the '
-                        'checkpoint data and models can be exported to during '
-                        'training.')
+    parser.add_argument('--batch_size', type=int)
+    parser.add_argument('--model_checkpoint_filename', type=str)
     return parser.parse_args()
 
 
@@ -31,8 +29,13 @@ def train_model(args: argparse.Namespace) -> None:
     train_args = DEFAULT_TRAIN_ARGS
     if args.epochs:
         train_args['epochs'] = args.epochs
-    train_args['batch_size'] = 1
+    if args.batch_size:
+        train_args['batch_size'] = args.batch_size
+    if args.model_checkpoint_filename:
+        train_args['model_checkpoint_filename'] = \
+            args.model_checkpoint_filename
     history = train_s3(model, partition, S3_TRAIN_IMAGE_DIR, S3_LABEL_DIR)
+    plot_history(history, outfile=HISTORY_FIG_OUTFILE, show=False)
 
 
 if __name__ == '__main__':
