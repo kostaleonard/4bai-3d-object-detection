@@ -23,7 +23,7 @@ git clone https://github.com/kostaleonard/4bai-3d-object-detection.git
 To start training, run the following. You can safely exit the SSH connection and come back to it. You can also use `screen` as an alternative to `nohup`.
 
 ```
-nohup python notebooks/model_3d_train.py &
+nohup python notebooks/model_3d_train.py --model_checkpoint_filename model_100_epochs.h5 --epochs 100 --use_tensorboard &
 ```
 
 To get the saved model file, run the following.

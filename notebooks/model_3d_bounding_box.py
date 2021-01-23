@@ -82,7 +82,8 @@ def get_model_3d_deepbox() -> Model:
                         orientation_loss,
                         tf.keras.losses.categorical_crossentropy],
                   loss_weights=[4, 8, 1],
-                  optimizer='adam')
+                  optimizer='adam',
+                  metrics=['accuracy'])
     return model
 
 

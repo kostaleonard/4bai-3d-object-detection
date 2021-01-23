@@ -17,6 +17,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('--epochs', type=int)
     parser.add_argument('--batch_size', type=int)
     parser.add_argument('--model_checkpoint_filename', type=str)
+    parser.add_argument('--use_tensorboard', action='store_true')
     return parser.parse_args()
 
 
@@ -34,6 +35,11 @@ def train_model(args: argparse.Namespace) -> None:
     if args.model_checkpoint_filename:
         train_args['model_checkpoint_filename'] = \
             args.model_checkpoint_filename
+    else:
+        raise ValueError('You are attempting to train without saving the '
+            'model.')
+    if args.use_tensorboard:
+        train_args['use_tensorboard'] = args.use_tensorboard
     history = train_s3(model, partition, S3_TRAIN_IMAGE_DIR, S3_LABEL_DIR)
     plot_history(history, outfile=HISTORY_FIG_OUTFILE, show=False)
 
