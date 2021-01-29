@@ -65,6 +65,8 @@ def get_model_3d_deepbox() -> Model:
     dim_out = Dense(512, activation=None)(conv5)
     dim_out = LeakyReLU(alpha=0.1)(dim_out)
     dim_out = Dropout(rate=0.5)(dim_out)
+    dim_out = Dense(512, activation=None)(dim_out)
+    dim_out = LeakyReLU(alpha=0.1)(dim_out)
     dim_out = Dense(DIM_OUT_SHAPE, activation=None)(dim_out)
     orient_out = Dense(256, activation=None)(conv5)
     orient_out = LeakyReLU(alpha=0.1)(orient_out)
@@ -232,8 +234,8 @@ def predict_on_dir(model: Model, image_filenames: List[str], image_dir: str,
                     line = ' '.join([str(item) for item in line]) + ' ' + str(
                         np.max(prediction[2][0])) + '\n'
                     box3d.write(line)
-                    
-                    
+
+
 def smooth_curve(points: List[float], factor: float = 0.6) -> List[float]:
     """Returns points smoothed over an exponential.
     :param points: The points of the curve to smooth.
@@ -259,8 +261,11 @@ def plot_history(history: History, smooth_fac: float = 0.6,
     :param outfile: If specified, the filename to which the figure is saved.
     :param show: If True, display the figure.
     """
-    acc = history.history['accuracy']
-    val_acc = history.history['val_accuracy']
+    print('History: {0}'.format(history.history.keys()))
+    acc = history.history['dense_1_accuracy']
+    val_acc = history.history['val_dense_1_accuracy']
+    orient_acc = history.history['lambda_accuracy']
+    val_orient_acc = history.history['val_lambda_accuracy']
     loss = history.history['loss']
     val_loss = history.history['val_loss']
     epochs = range(1, len(acc) + 1)
@@ -268,10 +273,19 @@ def plot_history(history: History, smooth_fac: float = 0.6,
              label='Smoothed training acc')
     plt.plot(epochs, smooth_curve(val_acc, factor=smooth_fac), 'b',
              label='Smoothed validation acc')
-    plt.title('Training and validation accuracy')
+    plt.title('Training and validation dimension accuracy')
     plt.legend()
     if outfile:
-        plt.savefig('acc_{0}.png'.format(outfile))
+        plt.savefig('dim_acc_{0}.png'.format(outfile))
+    plt.figure()
+    plt.plot(epochs, smooth_curve(orient_acc, factor=smooth_fac), 'bo',
+             label='Smoothed training acc')
+    plt.plot(epochs, smooth_curve(val_orient_acc, factor=smooth_fac), 'b',
+             label='Smoothed validation acc')
+    plt.title('Training and validation orientation accuracy')
+    plt.legend()
+    if outfile:
+        plt.savefig('orient_acc_{0}.png'.format(outfile))
     plt.figure()
     plt.plot(epochs, smooth_curve(loss), 'bo', label='Smoothed training loss')
     plt.plot(epochs, smooth_curve(val_loss), 'b',
