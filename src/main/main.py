@@ -3,7 +3,6 @@ https://github.com/smallcorgi/3D-Deepbox
 """
 
 import tensorflow as tf
-import tensorflow.contrib.slim as slim
 import cv2
 import os
 import numpy as np
@@ -36,10 +35,25 @@ dims_avg = {'Cyclist': np.array([1.73532436, 0.58028152, 1.77413709]),
             'Truck': np.array([3.07392252, 2.63079903, 11.2190799])}
 
 #### Placeholder
-inputs = tf.placeholder(tf.float32, shape=[None, 224, 224, 3])
-d_label = tf.placeholder(tf.float32, shape=[None, 3])
-o_label = tf.placeholder(tf.float32, shape=[None, BIN, 2])
-c_label = tf.placeholder(tf.float32, shape=[None, BIN])
+#inputs = tf.placeholder(tf.float32, shape=[None, 224, 224, 3])
+#d_label = tf.placeholder(tf.float32, shape=[None, 3])
+#o_label = tf.placeholder(tf.float32, shape=[None, BIN, 2])
+#c_label = tf.placeholder(tf.float32, shape=[None, BIN])
+
+
+def orientation_loss(y_true: np.ndarray, y_pred: np.ndarray) -> tf.Tensor:
+    """Returns the orientation loss from the predictions.
+    :param y_true: The true orientation, a tensor of shape (None, 2, 2).
+    :param y_pred: The predicted orientation of the same shape.
+    :return: The orientation loss as a tensor.
+    """
+    anchors = tf.reduce_sum(tf.square(y_true), axis=2)
+    anchors = tf.greater(anchors, tf.constant(0.5))
+    anchors = tf.reduce_sum(tf.cast(anchors, tf.float32), 1)
+    loss = (y_true[:, :, 0] * y_pred[:, :, 0] + y_true[:, :, 1] * \
+            y_pred[:, :, 1])
+    loss = tf.reduce_sum((2 - 2 * tf.reduce_mean(loss, axis=0))) / anchors
+    return tf.reduce_mean(loss)
 
 
 def parse_args():
@@ -208,22 +222,10 @@ def train(image_dir, box2d_loc, label_dir):
         sys.stdout.flush()
 
 
-def test(model, image_dir, box2d_loc, box3d_loc):
+def test(model, image_dir, box2d_loc, box3d_loc, max_images=10000):
     ### buile graph
-    dimension, orientation, confidence, loss, optimizer, loss_d, loss_o, loss_c = build_model()
-
-    ### GPU config
-    tfconfig = tf.ConfigProto(allow_soft_placement=True)
-    tfconfig.gpu_options.allow_growth = True
-    sess = tf.Session(config=tfconfig)
-
-    # Initializing the variables
-    init = tf.global_variables_initializer()
-    sess.run(init)
-
-    # Restore model
-    saver = tf.train.Saver()
-    saver.restore(sess, model)
+    #dimension, orientation, confidence, loss, optimizer, loss_d, loss_o, loss_c = build_model()
+    model_3d = tf.keras.models.load_model(model, custom_objects={'orientation_loss': orientation_loss})
 
     # create a folder for saving result
     if os.path.isdir(box3d_loc) == False:
@@ -233,7 +235,7 @@ def test(model, image_dir, box2d_loc, box3d_loc):
     all_image = sorted(os.listdir(image_dir))
     print('Loaded {0} test images'.format(len(all_image)))
 
-    for f in all_image:
+    for f in all_image[:max_images]:
         image_file = image_dir + f
         box2d_file = box2d_loc + f.replace('png', 'txt')
         if not os.path.exists(box2d_file):
@@ -259,8 +261,9 @@ def test(model, image_dir, box2d_loc, box3d_loc):
                 patch = cv2.resize(patch, (NORM_H, NORM_W))
                 patch = patch - np.array([[[103.939, 116.779, 123.68]]])
                 patch = np.expand_dims(patch, 0)
-                prediction = sess.run([dimension, orientation, confidence],
-                                      feed_dict={inputs: patch})
+                #prediction = sess.run([dimension, orientation, confidence],
+                #                      feed_dict={inputs: patch})
+                prediction = model_3d.predict(patch)
                 # Transform regressed angle
                 max_anc = np.argmax(prediction[2][0])
                 anchors = prediction[1][0][max_anc]

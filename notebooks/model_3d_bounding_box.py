@@ -8,11 +8,12 @@ import cv2
 import numpy as np
 from typing import Dict, Any, List, Optional
 from tqdm import tqdm
+from datetime import datetime
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow.keras import backend as K
 from tensorflow.keras import Model
-from tensorflow.keras.callbacks import History, ModelCheckpoint
+from tensorflow.keras.callbacks import History, ModelCheckpoint, TensorBoard
 from tensorflow.keras.layers import Conv2D, MaxPool2D, Flatten, Dense, \
     LeakyReLU, Dropout, Reshape, Softmax, Input, Lambda
 from tensorflow.keras.applications import VGG16
