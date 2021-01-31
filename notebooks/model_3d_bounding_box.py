@@ -269,7 +269,7 @@ def plot_history(history: History, smooth_fac: float = 0.6,
     """
     loss = history.history['loss']
     val_loss = history.history['val_loss']
-    epochs = range(1, len(acc) + 1)
+    epochs = range(1, len(loss) + 1)
     plt.plot(epochs, smooth_curve(loss), 'bo', label='Smoothed training loss')
     plt.plot(epochs, smooth_curve(val_loss), 'b',
              label='Smoothed validation loss')
