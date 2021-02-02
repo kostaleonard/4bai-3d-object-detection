@@ -15,7 +15,7 @@ from tensorflow.keras import backend as K
 from tensorflow.keras import Model
 from tensorflow.keras.callbacks import History, ModelCheckpoint, TensorBoard
 from tensorflow.keras.layers import Conv2D, MaxPool2D, Flatten, Dense, \
-    LeakyReLU, Dropout, Reshape, Softmax, Input, Lambda
+    LeakyReLU, Dropout, Reshape, Softmax, Input, Lambda, BatchNormalization
 from tensorflow.keras.applications import VGG16
 from tensorflow.keras.utils import plot_model
 
@@ -64,19 +64,25 @@ def get_model_3d_deepbox() -> Model:
     conv5 = Flatten()(vgg.output)
     dim_out = Dense(1024, activation=None)(conv5)
     dim_out = LeakyReLU(alpha=0.1)(dim_out)
+    dim_out = BatchNormalization()(dim_out)
     dim_out = Dropout(rate=0.5)(dim_out)
     dim_out = Dense(1024, activation=None)(dim_out)
     dim_out = LeakyReLU(alpha=0.1)(dim_out)
+    dim_out = BatchNormalization()(dim_out)
     dim_out = Dense(512, activation=None)(dim_out)
     dim_out = LeakyReLU(alpha=0.1)(dim_out)
+    dim_out = BatchNormalization()(dim_out)
     dim_out = Dense(DIM_OUT_SHAPE, activation=None)(dim_out)
     orient_out = Dense(512, activation=None)(conv5)
     orient_out = LeakyReLU(alpha=0.1)(orient_out)
+    orient_out = BatchNormalization()(orient_out)
     orient_out = Dropout(rate=0.5)(orient_out)
     orient_out = Dense(256, activation=None)(orient_out)
     orient_out = LeakyReLU(alpha=0.1)(orient_out)
+    orient_out = BatchNormalization()(orient_out)
     orient_out = Dense(256, activation=None)(orient_out)
     orient_out = LeakyReLU(alpha=0.1)(orient_out)
+    orient_out = BatchNormalization()(orient_out)
     orient_out = Dense(ORIENT_OUT_SHAPE[0] * ORIENT_OUT_SHAPE[1],
                        activation=None)(orient_out)
     orient_out = Reshape((ORIENT_OUT_SHAPE[0], ORIENT_OUT_SHAPE[1]))(orient_out)
