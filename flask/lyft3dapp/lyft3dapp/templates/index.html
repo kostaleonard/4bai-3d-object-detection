@@ -1,35 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
-<head>
-    <title>Rock Paper Scissor App</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        .hero-image {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("/static/images/rps.png");
-            background-color: #cccccc;
-            height: 100vh;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            position: relative;
-        }
-
-        .hero-text {
-            text-align: center;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-        }
-
-        input[type=file] {
+  <head>
+    <title>Lyft3D Predictions</title>
+      <style>
+          input[type=file] {
             width: 100%;
             padding: 12px 20px;
             margin: 8px 0;
@@ -61,17 +35,12 @@
             background-color: #DC143C;
             border-radius: 4px;
         }
-    </style>
-</head>
-
-<body>
-
-    <div class="hero-image">
-        <div class="hero-text">
-            <h1 style="font-size:50px">Rock, Paper, Scissor Classifier</h1>
-            <h3>Upload a picture of a hand to see what it is! </h3>
+      </style>
+  </head>
+  <body>
+    <h3>Predict 3D bounding boxes.</h3>
+    <p>Upload an image from a vehicle-mounted camera and the camera configuration file. Select from the presets directory for convenience.</p>
             <form method='post' enctype=multipart/form-data> <input type="file" name="file">
                 <input type="submit" value="upload">
-</body>
-
+  </body>
 </html>
