@@ -1,5 +1,7 @@
-from flask import request, render_template
+from flask import request, render_template, make_response
 from flask import current_app as app
+from io import BytesIO
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 from .inference import predict_on_image_3d
 
@@ -18,5 +20,10 @@ def index():
             return
         image_file = request.files['image_file']
         config_file = request.files['cam_config_file']
-        predict_on_image_3d(image_file, config_file)
-        return render_template('result.html')
+        fig = predict_on_image_3d(image_file, config_file)
+        canvas = FigureCanvas(fig)
+        png_output = BytesIO()
+        canvas.print_png(png_output)
+        response = make_response(png_output.getvalue())
+        response.headers['Content-Type'] = 'image/png'
+        return response

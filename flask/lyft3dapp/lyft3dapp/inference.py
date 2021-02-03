@@ -124,3 +124,4 @@ def predict_on_image_3d(image_file, cam_config_file):
                            config,
                            force_box_color='orange')
     plt.savefig(prediction_save_path)
+    return plt.gcf()
