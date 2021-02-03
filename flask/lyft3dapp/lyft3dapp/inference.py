@@ -45,6 +45,7 @@ def read_image(image_file):
 
 
 def predict_on_image_3d(image_file, cam_config_file):
+    plt.clf()
     npimg = np.fromfile(image_file, np.uint8)
     img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -52,17 +53,12 @@ def predict_on_image_3d(image_file, cam_config_file):
     prediction_save_path = os.path.join(CURR_DIR, 'static/images/output.png')
     cam_config_outfile = os.path.join(CURR_DIR, 'static/config/cam.txt')
     box3d_file = os.path.join(CURR_DIR, 'static/box3d/box3d.txt')
-    # TODO run the model on the image.
-    #img = cv2.imread(image_file)
     img = img.astype(np.float32, copy=False) / 255.
     with open(cam_config_outfile, 'wb') as outfile:
         outfile.write(cam_config_file.read())
     with open(cam_config_outfile, 'r') as infile:
         config = infile.readlines()
-    print(config)
-    print('truncating')
     config = config[7:]
-    print(config)
     with open(box3d_file, 'w') as box3d:
         for line in config:
             line = line.strip().split(' ')
