@@ -40,7 +40,9 @@
   <body>
     <h3>Predict 3D bounding boxes.</h3>
     <p>Upload an image from a vehicle-mounted camera and the camera configuration file. Select from the presets directory for convenience.</p>
-            <form method='post' enctype=multipart/form-data> <input type="file" name="file">
-                <input type="submit" value="upload">
+            <form method='post' enctype=multipart/form-data>
+              <input type="file" name="image_file">
+              <input type="file" name="cam_config_file">
+              <input type="submit" value="upload">
   </body>
 </html>
