@@ -3,7 +3,11 @@
 
 Authors:
 * Leo Kosta: [Leo's github](https://github.com/kostaleonard)
-* Ashish Mahashabde: [Ashish's github](https://github.com/amahashabde)
+* Ashish Mahashabde: [Ashish's github](https://github.com/amahashabde)Project Description
+
+## Project Report
+
+Detailed project report can be found at: https://drive.google.com/file/d/184QNOev2crMUI2fR1C5n0f-x7206jQHU/view?usp=sharing
 
 ## Project Description
 
