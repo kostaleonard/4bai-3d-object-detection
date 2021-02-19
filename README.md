@@ -9,6 +9,10 @@ Authors:
 
 Detailed project report can be found at: https://drive.google.com/file/d/184QNOev2crMUI2fR1C5n0f-x7206jQHU/view?usp=sharing
 
+## System Design
+
+![System Design](example_images/SystemDesign.png)
+
 ## Project Description
 
 In order to effectively maneuver, autonomous vehicles rely on the ability to accurately estimate bounding boxes of various objects, including other vehicles. Companies like Lyft have recently experimented with using 3D bounding boxes, which could allow autonomous vehicles to have richer positioning information and make better predictions for maneuvering. By reimplementing recent methods and experimenting with new approaches, we want to improve on the state-of-the-art in bounding volume prediction in the self-driving car domain.
