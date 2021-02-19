@@ -11,7 +11,7 @@ Detailed project report can be found at: https://drive.google.com/file/d/184QNOe
 
 ## System Design
 
-![System Design](example_images/SystemDesign.png)
+![System Design](example_images/SystemDesign.PNG)
 
 ## Project Description
 
