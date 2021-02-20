@@ -3,7 +3,7 @@
 
 Authors:
 * Leo Kosta: [Leo's github](https://github.com/kostaleonard)
-* Ashish Mahashabde: [Ashish's github](https://github.com/amahashabde)Project Description
+* Ashish Mahashabde: [Ashish's github](https://github.com/amahashabde)
 
 ## Project Report
 
